@@ -1,16 +1,19 @@
+//go:build wireinject
+// +build wireinject
+
 package main
 
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/wire"
-	adminRepo "github.com/renfy96/yy-layout-v1/internal/boudary_context/admin/infrastructure/repository"
+	adminSvc "github.com/renfy96/yy-layout-v1/internal/application/admin/service"
+	adminApp "github.com/renfy96/yy-layout-v1/internal/bc/admin/application"
+	adminRepo "github.com/renfy96/yy-layout-v1/internal/bc/admin/infrastructure/repository"
 	repo "github.com/renfy96/yy-layout-v1/internal/repository"
 	"github.com/renfy96/yy-layout-v1/internal/router"
 	"github.com/renfy96/yy-layout-v1/pkg/log"
 	"github.com/spf13/viper"
 )
-
-var ServerSet = wire.NewSet(router.NewServerHTTP)
 
 // RepositorySet 仓储
 var RepositorySet = wire.NewSet(
@@ -18,9 +21,24 @@ var RepositorySet = wire.NewSet(
 	adminRepo.NewAdminRepository,
 )
 
+// 请求服务
+var repoSvc = wire.NewSet(
+	adminApp.NewCommandService,
+	adminApp.NewQueryService,
+)
+
+// SvcSet 业务服务
+var SvcSet = wire.NewSet(
+	adminSvc.NewService,
+)
+
+var ServerSet = wire.NewSet(router.NewServerHTTP)
+
 func newApp(*viper.Viper, *log.Logger) (*gin.Engine, func(), error) {
 	panic(wire.Build(
-		ServerSet,
 		RepositorySet,
+		repoSvc,
+		SvcSet,
+		ServerSet,
 	))
 }

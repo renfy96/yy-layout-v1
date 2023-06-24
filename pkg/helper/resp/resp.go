@@ -2,6 +2,7 @@ package resp
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/renfy96/yy-layout-v1/enum"
 	"net/http"
 )
 
@@ -25,4 +26,9 @@ func HandleError(ctx *gin.Context, httpCode, code int, message string, data inte
 	}
 	resp := response{Code: code, Message: message, Data: data}
 	ctx.JSON(httpCode, resp)
+}
+
+func HandleParamsErr(ctx *gin.Context) {
+	resp := response{Code: enum.Error, Message: "参数错误", Data: nil}
+	ctx.JSON(http.StatusBadRequest, resp)
 }
