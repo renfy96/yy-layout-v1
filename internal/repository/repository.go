@@ -1,7 +1,6 @@
 package repository
 
 import (
-	"github.com/renfy96/yy-layout-v1/internal/repository/query"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -31,9 +30,4 @@ func NewDb(conf *viper.Viper) *gorm.DB {
 		panic(err)
 	}
 	return db
-}
-
-func Use(db *gorm.DB) query.Query {
-	query.Use(db)
-	return *query.Q
 }
